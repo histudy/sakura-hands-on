@@ -16,6 +16,10 @@
   template:
     src: php.ini.j2
     dest: /etc/php.ini
+- name: install composer
+  script: installComposer.sh
+  args:
+    creates: /usr/local/bin/composer
 - name: php-fpm is active and enabled on system startup
   service:
     name: php-fpm
