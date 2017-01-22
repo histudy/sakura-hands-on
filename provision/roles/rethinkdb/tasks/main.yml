@@ -55,5 +55,5 @@
     port: "{{ rethinkdb_cfg.http_port|default(8080 + rethinkdb_cfg.port_offset|default(0)) }}/tcp"
     permanent: true
     state: enabled
-  notify: reload firewalld
+  notify: restart firewalld
   when: rethinkdb_cfg.no_http_admin is undefined or not rethinkdb_cfg.no_http_admin

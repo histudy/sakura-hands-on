@@ -26,11 +26,11 @@
     source: "{{ mailcatcher_cfg.smtp.ip }}"
     permanent: true
     state: enabled
-  notify: reload firewalld
+  notify: restart firewalld
 - name: allow http port
   firewalld:
     port: "{{ mailcatcher_cfg.http.port }}/tcp"
     source: "{{ mailcatcher_cfg.http.ip }}"
     permanent: true
     state: enabled
-  notify: reload firewalld
+  notify: restart firewalld

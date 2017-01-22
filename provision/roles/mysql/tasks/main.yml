@@ -94,7 +94,7 @@
     source: "{{ mysql_allow_host|default(omit) }}"
     permanent: true
     state: enabled
-  notify: reload firewalld
+  notify: restart firewalld
 - name: create database
   mysql_db:
     name: "{{ item.name }}"

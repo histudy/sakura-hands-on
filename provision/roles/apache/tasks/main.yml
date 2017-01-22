@@ -48,11 +48,11 @@
     service: http
     permanent: true
     state: enabled
-  notify: reload firewalld
+  notify: restart firewalld
 - name: allow https port
   firewalld:
     service: https
     permanent: true
     state: enabled
-  notify: reload firewalld
+  notify: restart firewalld
   when: "'mod_ssl' in apache_packages"
