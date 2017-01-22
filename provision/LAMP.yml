@@ -1,6 +1,8 @@
 ---
-- hosts: all
+- name: LAMP
+  hosts: all
   roles:
+    - common
     - apache
     - php
     - mysql
