@@ -1,0 +1,4 @@
+---
+- playbook: LAMP.yml
+  inventory: hosts
+  hash_behaviour: merge
