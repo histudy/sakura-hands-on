@@ -28,6 +28,17 @@ Vagrant.configure("2") do |config|
     ansibleVars.merge!(YAML.load_file(hostVariableFile))
   end
 
+  # vagrant-hostmanager
+  if Vagrant.has_plugin?('vagrant-hostmanager')
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.aliases = [
+      'www.' + ansibleVars['domain'],
+      'db.' + ansibleVars['domain'],
+      'mailcatcher.' + ansibleVars['domain'],
+    ]
+  end
+
   config.vm.provider :sakura do |sakura, override|
 
     sakura.access_token = ENV['SAKURACLOUD_ACCESS_TOKEN'] || 'YOUR ACCESS TOKEN'
