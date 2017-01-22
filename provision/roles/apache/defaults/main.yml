@@ -1,0 +1,11 @@
+---
+apache_packages:
+  - httpd
+  - httpd-tools
+  - mod_ssl
+
+apache_vhosts:
+  - name: 00-default
+    server_name: www.example.com
+    doc_root: /var/www/html
+    directory_index: "index.html index.htm"

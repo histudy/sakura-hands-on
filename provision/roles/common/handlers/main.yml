@@ -1,0 +1,17 @@
+---
+- name: start firewalld
+  service:
+    name: firewalld
+    state: started
+- name: stop firewalld
+  service:
+    name: firewalld
+    state: stoped
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted
+- name: reload firewalld
+  service:
+    name: firewalld
+    state: reloaded

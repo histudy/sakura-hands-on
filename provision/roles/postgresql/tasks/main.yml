@@ -1,0 +1,33 @@
+---
+- name: install PostgreSQL
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ postgresql_packages }}"
+- name: check postgresql data dir
+  stat:
+    path: "{{ postgresql_data_dir }}/PG_VERSION"
+  register: result
+- name: initialize database
+  command: postgresql-setup initdb
+  when: not result.stat.exists
+- name: create PostgreSQL config files
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ postgresql_data_dir }}/{{ item }}"
+  notify: restart postgresql
+  with_items:
+    - pg_hba.conf
+    - pg_ident.conf
+    - postgresql.conf
+- name: PostgreSQL is active and enabled on system startup
+  service:
+    name: postgresql
+    state: started
+    enabled: true
+- name: allow PostgreSQL port
+  firewalld:
+    service: postgresql
+    source: "{{ postgresql_allow_host|default(omit) }}"
+    permanent: true
+    state: enabled

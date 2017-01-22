@@ -1,0 +1,26 @@
+---
+common_pachages:
+    - tuned
+    - firewalld
+    - fail2ban
+    - unzip
+    - zip
+    - chrony
+    - gcc
+    - gcc-c++
+    - make
+    - perl
+    - curl
+    - wget
+    - libtool
+    - bison
+    - flex
+    - patch
+    - automake
+    - autoconf
+    - subversion
+    - git
+    - vim-enhanced
+    - bash-completion
+
+# common_tuned_profile: virtual-guest

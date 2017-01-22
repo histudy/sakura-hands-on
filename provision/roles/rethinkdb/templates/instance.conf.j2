@@ -1,0 +1,158 @@
+#
+# RethinkDB instance configuration sample
+#
+# - Give this file the extension .conf and put it in /etc/rethinkdb/instances.d in order to enable it.
+# - See http://www.rethinkdb.com/docs/guides/startup/ for the complete documentation
+# - Uncomment an option to change its value.
+#
+
+###############################
+## RethinkDB configuration
+###############################
+
+### Process options
+
+## User and group used to run rethinkdb
+## Command line default: do not change user or group
+## Init script default: rethinkdb user and group
+# runuser=rethinkdb
+# rungroup=rethinkdb
+{% if rethinkdb_cfg.runuser is defined -%}
+runuser={{ rethinkdb_cfg.runuser }}
+{% endif %}
+{% if rethinkdb_cfg.rungroup is defined -%}
+rungroup={{ rethinkdb_cfg.rungroup }}
+{% endif %}
+
+## Stash the pid in this file when the process is running
+## Note for systemd users: Systemd uses its own internal mechanism. Do not set this parameter.
+## Command line default: none
+## Init script default: /var/run/rethinkdb/<name>/pid_file (where <name> is the name of this config file without the extension)
+# pid-file=/var/run/rethinkdb/rethinkdb.pid
+{% if rethinkdb_cfg.pid_file is defined -%}
+pid-file={{ rethinkdb_cfg.pid_file }}
+{% endif %}
+
+### File path options
+
+## Directory to store data and metadata
+## Command line default: ./rethinkdb_data
+## Init script default: /var/lib/rethinkdb/<name>/ (where <name> is the name of this file without the extension)
+# directory=/var/lib/rethinkdb/default
+directory={{ rethinkdb_cfg.directory }}
+
+## Log file options
+## Default: <directory>/log_file
+# log-file=/var/log/rethinkdb
+{% if rethinkdb_cfg.log_file is defined -%}
+log-file={{ rethinkdb_cfg.log_file }}
+{% endif %}
+
+### Network options
+
+## Address of local interfaces to listen on when accepting connections
+## May be 'all' or an IP address, loopback addresses are enabled by default
+## Default: all local addresses
+# bind=127.0.0.1
+{% if rethinkdb_cfg.bind is defined -%}
+bind={{ rethinkdb_cfg.bind }}
+{% endif %}
+
+## Address that other rethinkdb instances will use to connect to this server.
+## It can be specified multiple times
+# canonical-address=
+{% if rethinkdb_cfg.canonical_address is defined -%}
+canonical-address={{ rethinkdb_cfg.canonical_address }}
+{% endif %}
+
+## The port for rethinkdb protocol for client drivers
+## Default: 28015 + port-offset
+# driver-port=28015
+{% if rethinkdb_cfg.driver_port is defined -%}
+driver-port={{ rethinkdb_cfg.driver_port }}
+{% endif %}
+
+## The port for receiving connections from other nodes
+## Default: 29015 + port-offset
+# cluster-port=29015
+{% if rethinkdb_cfg.cluster_port is defined -%}
+cluster-port={{ rethinkdb_cfg.cluster_port }}
+{% endif %}
+
+## The host:port of a node that rethinkdb will connect to
+## This option can be specified multiple times.
+## Default: none
+# join=example.com:29015
+{% if rethinkdb_cfg.join is defined -%}
+join={{ rethinkdb_cfg.join }}
+{% endif %}
+
+## All ports used locally will have this value added
+## Default: 0
+# port-offset=0
+{% if rethinkdb_cfg.port_offset is defined -%}
+port-offset={{ rethinkdb_cfg.port_offset }}
+{% endif %}
+
+## r.http(...) queries will use the given server as a web proxy
+## Default: no proxy
+# reql-http-proxy=socks5://example.com:1080
+{% if rethinkdb_cfg.reql_http_proxy is defined -%}
+reql-http-proxy={{ rethinkdb_cfg.reql_http_proxy }}
+{% endif %}
+
+### Web options
+
+## Port for the http admin console
+## Default: 8080 + port-offset
+# http-port=8080
+{% if rethinkdb_cfg.http_port is defined -%}
+http-port={{ rethinkdb_cfg.http_port }}
+{% endif %}
+
+## Disable web administration console
+# no-http-admin
+{% if rethinkdb_cfg.no_http_admin is defined and rethinkdb_cfg.no_http_admin -%}
+no-http-admin
+{% endif %}
+
+### CPU options
+
+## The number of cores to use
+## Default: total number of cores of the CPU
+# cores=2
+{% if rethinkdb_cfg.cores is defined -%}
+cores={{ rethinkdb_cfg.cores }}
+{% endif %}
+
+### Memory options
+
+## Size of the cache in MB
+## Default: Half of the available RAM on startup
+# cache-size=1024
+{% if rethinkdb_cfg.cache_size is defined -%}
+cache-size={{ rethinkdb_cfg.cache_size }}
+{% endif %}
+
+### Disk
+
+## How many simultaneous I/O operations can happen at the same time
+# io-threads=64
+{% if rethinkdb_cfg.io_threads is defined -%}
+io-threads={{ rethinkdb_cfg.io_threads }}
+{% endif %}
+
+## Enable direct I/O
+# direct-io
+{% if rethinkdb_cfg.direct_io is defined and rethinkdb_cfg.direct_io -%}
+direct-io
+{% endif %}
+
+### Meta
+
+## The name for this server (as will appear in the metadata).
+## If not specified, it will be randomly chosen from a short list of names.
+# server-name=server1
+{% if rethinkdb_cfg.server_name is defined -%}
+server-name={{ rethinkdb_cfg.server_name }}
+{% endif %}

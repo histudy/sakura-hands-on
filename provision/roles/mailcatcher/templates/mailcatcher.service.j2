@@ -1,0 +1,11 @@
+[Unit]
+Description=MailCatcher server
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/local/bin/mailcatcher --foreground --smtp-ip {{ mailcatcher_cfg.smtp.ip }} --smtp-port {{ mailcatcher_cfg.smtp.port }} --http-ip {{ mailcatcher_cfg.http.ip }} --http-port {{ mailcatcher_cfg.http.port }}
+
+[Install]
+WantedBy=multi-user.target

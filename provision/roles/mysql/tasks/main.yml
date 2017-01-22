@@ -1,0 +1,109 @@
+---
+- name: check installed remi repository
+  stat:
+    path: /etc/yum.repo.d/mysql-community.repo
+  register: result
+- name: install MySQL repository
+  yum:
+    name: "http://dev.mysql.com/get/mysql-community-release-el{{ ansible_distribution_major_version }}-{{ mysql_repository_version }}.noarch.rpm"
+  when: not result.stat.exists
+- name: update mysql community repository
+  yum:
+    name: mysql-community-release
+    state: latest
+- name: load variables
+  include_vars: "{{ mysql_version }}.yml"
+- name: enable MySQL Community Server repository
+  ini_file:
+    dest: "/etc/yum.repos.d/mysql-community.repo"
+    section: "{{ mysql_repo_section }}"
+    option: enabled
+    value: 1
+- name: install MySQL packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ mysql_packages }}"
+- name: MySQL is active and enabled on system startup
+  service:
+    name: mysqld
+    enabled: true
+    state: started
+- name: check mysql connectin setting file
+  stat:
+    path: /root/.my.cnf
+  register: result
+- block:
+  - name: create initial setup file
+    template:
+      src: init.sql.j2
+      dest: /tmp/init.sql
+  - name: set connection param
+    set_fact:
+      mysql_connection_param: ""
+  - block:
+    - name: get MySQL temporary password
+      shell: 'cat /var/log/mysqld.log | grep "temporary password" | sed "s/.\+root@localhost: //"'
+      register: temporary_root_password
+    - name: orverwrite connection param
+      set_fact:
+        mysql_connection_param: '-p"{{ temporary_root_password.stdout }}" --connect-expired-password'
+    when: mysql_version|version_compare('5.7', '>=')
+  - name: execute MySQL initial setup
+    shell: mysql -u root {{ mysql_connection_param }} -D mysql < /tmp/init.sql
+  - name: remove initial setup file
+    file:
+      path: /tmp/init.sql
+      state: absent
+  when: not result.stat.exists
+- name: change root password
+  command: mysql -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('{{ mysql_root_password }}')" -D mysql
+  args:
+    removes: /root/.my.cnf
+- name: create MySQL root user setting
+  ini_file:
+    dest: /root/.my.cnf
+    section: client
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    create: true
+  with_items:
+      - { option: host, value: localhost }
+      - { option: user, value: root }
+      - { option: password, value: "{{ mysql_root_password }}" }
+- name: create MySQL extra config directory
+  file:
+    path: /etc/my.cnf.d
+    state: directory
+- name: add inlude extra config file directory
+  lineinfile:
+     dest: /etc/my.cnf
+     line: "!includedir /etc/my.cnf.d"
+- name: create extra config files
+  template:
+    src: "{{ item }}.cnf.j2"
+    dest: "/etc/my.cnf.d/{{ item }}.cnf"
+  with_items:
+    - mysql
+    - client
+    - mysqld
+  notify: restart mysql
+- name: allow MySQL port
+  firewalld:
+    service: mysql
+    source: "{{ mysql_allow_host|default(omit) }}"
+    permanent: true
+    state: enabled
+  notify: reload firewalld
+- name: create database
+  mysql_db:
+    name: "{{ item.name }}"
+    encoding: "{{ item.encoding|default(mysql_default_charset) }}"
+    collation: "{{ item.collation|default(mysql_default_collation) }}"
+  with_items: "{{ mysql_databases }}"
+- name: create database user
+  mysql_user:
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    priv: "{{ item.name }}.*:ALL"
+  with_items: "{{ mysql_databases }}"

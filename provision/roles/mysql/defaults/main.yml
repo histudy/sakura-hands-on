@@ -1,0 +1,94 @@
+---
+mysql_version: 5.6
+
+mysql_packages:
+  - MySQL-python
+  - mysql-community-client
+  - mysql-community-server
+
+mysql_root_password: root_Passw0rd
+
+mysql_default_charset: utf8
+mysql_default_collation: utf8_general_ci
+
+mysql_allow_host: 127.0.0.1
+
+mysql_databases: []
+
+# Example
+# mysql_databases:
+#   - name: app_prod
+#     user: app_prod_user
+#     password: appProd_DB_Passw0rd
+#   - name: app_stage
+#     user: app_stage_user
+#     password: appStageing_DB_Passw0rd
+#   - name: app_test
+#     user: app_test_user
+#     password: appTest_DB_Passw0rd
+#   - name: app_dev
+#     user: add_dev_user
+#     password: appDev_DB_Passw0rd
+
+mysql_baffer_pool_rate: 50
+mysql_key_baffer_rate: 15
+
+mysql_cfg:
+  mysqld:
+    ## General
+    # sql_mode: "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+    ## Network
+    # max_connections: 200
+    # connect_timeout: 10
+    # max_allowed_packet: 16M
+    # skip_name_resolve: null
+    # interactive_timeout: 3600
+    # wait_timeout: 600
+
+    ## Cache
+    ## Default: 1M
+    query_cache_size: 64M
+    ## Default: 1M
+    query_cache_limit: 8M
+    query_cache_type:  1
+    # table_open_cache: 2048
+    # thread_cache_size: 16
+    # table_definition_cache: 2048
+
+    ## Temp Tables
+    # max_heap_table_size: 64M
+    # tmp_table_size: 32M
+
+    ## Global Buffers(InnoDB)
+    ## Default:128M
+    innodb_buffer_pool_size: "{{ ((ansible_memtotal_mb * 1024 * 1024) * (mysql_baffer_pool_rate / 100))|int }}"
+    ## Default:8M
+    # innodb_log_buffer_size: 32M
+
+    ## Global Buffers(MyISAM)
+    ## Default:8M
+    key_buffer_size: "{{ ((ansible_memtotal_mb * 1024 * 1024) * (mysql_key_baffer_rate / 100))|int }}"
+
+    ## Thread Buffers(InnoDB)
+    ## Default:1M
+    # innodb_sort_buffer_size: 1M
+    ## Default:256K
+    # join_buffer_size: 256K
+    ## Default:128K
+    # read_buffer_size: 128K
+    ## Default:256K
+    # read_rnd_buffer_size: 256K
+    ## Default:256K
+    # sort_buffer_size: 256K
+
+    ## Thread Buffers(MyISAM)
+    ## Default:256K
+    # myisam_sort_buffer_size: 64M
+
+    ## Logging
+    # general_log: 0
+    # general_log_file: /var/log/mysql/general_log
+    # log_warnings: 0
+    # long_query_time: 2
+    # slow_query_log: 1
+    # slow_query_log_file: /var/log/mysql/slow_log

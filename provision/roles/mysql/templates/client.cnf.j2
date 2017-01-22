@@ -1,0 +1,7 @@
+[client]
+## Charset
+default-character-set = {{ mysql_default_charset }}
+
+{% if mysql_cfg.client is defined and mysql_cfg.client.extra_parameters is defined %}
+{{ mysql_cfg.mysql.extra_parameters }}
+{% endif %}

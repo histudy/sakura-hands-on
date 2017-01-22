@@ -1,0 +1,19 @@
+---
+- name: start mailcatcher
+  systemd:
+    name: mailcatcher
+    state: sterted
+- name: stop mailcatcher
+  systemd:
+    name: mailcatcher
+    state: stoped
+- name: restart mailcatcher
+  systemd:
+    name: mailcatcher
+    state: restarted
+    daemon_reload: true
+- name: reload mailcatcher
+  systemd:
+    name: mailcatcher
+    state: reloaded
+    daemon_reload: true

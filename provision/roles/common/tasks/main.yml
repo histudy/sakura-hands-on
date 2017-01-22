@@ -1,0 +1,44 @@
+---
+- name: install dependency packages
+  yum:
+      name: "{{ item }}"
+      state: latest
+  with_items: "{{ common_dependency_pachages }}"
+- name: install common packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ common_pachages }}"
+- name: disable SELinux
+  selinux: state=disabled
+- name: tuned is active and enabled on system startup
+  service:
+    name: tuned
+    enabled: true
+    state: started
+- name: get tuned active profile
+  command: tuned-adm active
+  register: active_tuned_prifile
+  changed_when: false
+- block:
+  - name: get tuned recommend profile
+    command: tuned-adm recommend
+    register: result
+    changed_when: false
+  - name: set variable tuned profile
+    set_fact:
+      common_tuned_profile: "{{ result.stdout }}"
+  when: common_tuned_profile is undefined
+- name: set tuned profile
+  command: tuned-adm profile {{ common_tuned_profile }}
+  when: common_tuned_profile not in active_tuned_prifile.stdout
+- name: firewalld is active and enabled on system startup
+  service:
+    name: firewalld
+    enabled: true
+    state: started
+- name: fail2ban is active and enabled on system startup
+  service:
+    name: fail2ban
+    enabled: true
+    state: started

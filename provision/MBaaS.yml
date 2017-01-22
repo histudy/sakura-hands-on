@@ -1,0 +1,10 @@
+---
+- hosts: all
+  roles:
+    - common
+    - rethinkdb
+  vars:
+    rethinkdb_cfg:
+      bind: all
+  tasks:
+    - debug: msg="Let's Sakura Cloud Hans-on"

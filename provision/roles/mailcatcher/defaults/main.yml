@@ -1,0 +1,8 @@
+---
+mailcatcher_cfg:
+  smtp:
+    ip: "127.0.0.1"
+    port: 1025
+  http:
+    ip: "127.0.0.1"
+    port: 1080

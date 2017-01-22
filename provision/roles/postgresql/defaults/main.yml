@@ -1,0 +1,32 @@
+---
+postgresql_packages:
+  - postgresql
+  - postgresql-server
+
+postgresql_cfg:
+  listen_addresses: localhost
+  max_connections: 100
+  shared_buffers: 32MB
+  logging_collector: true
+  log_timezone: UTC
+  log_directory: pg_log
+  log_filename: 'postgresql-%a.log'
+  log_truncate_on_rotation: true
+  log_rotation_age: 1d
+  log_rotation_size: 0
+  datestyle: "iso, mdy"
+  lc_messages: en_US.UTF-8
+  lc_monetary: en_US.UTF-8
+  lc_numeric: en_US.UTF-8
+  lc_time: en_US.UTF-8
+  default_text_search_config: pg_catalog.english
+
+postgresql_hba_cfg:
+  - {type: host, db: all, user: all, addr: "127.0.0.1/32", method: ident, comment: "IPv4 local connections"}
+  - {type: host, db: all, user: all, addr: "::1/128", method: ident, comment: "IPv6 local connections"}
+
+postgresql_ident_cfg: [
+  # {map: mymap ,system: bryanh ,pg: guest1},
+  ]
+
+# postgresql_allow_host:

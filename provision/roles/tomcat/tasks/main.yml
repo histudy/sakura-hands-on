@@ -1,0 +1,11 @@
+---
+- name: install tomcat
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ tomcat_packages }}"
+- name: tomcat is active and enabled on system startup
+  service:
+    name: tomcat
+    state: started
+    enabled: true

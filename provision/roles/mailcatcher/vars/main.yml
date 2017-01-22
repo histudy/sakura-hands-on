@@ -1,0 +1,5 @@
+---
+mailcatcher_dependency_packages:
+  - ruby
+  - ruby-devel
+  - sqlite-devel

@@ -1,0 +1,17 @@
+---
+- name: start rethinkdb
+  service:
+    name: "rethinkdb@{{ rethinkdb_instance_name }}"
+    state: started
+- name: stop rethinkdb
+  service:
+    name: "rethinkdb@{{ rethinkdb_instance_name }}"
+    state: stoped
+- name: restart rethinkdb
+  service:
+    name: "rethinkdb@{{ rethinkdb_instance_name }}"
+    state: restarted
+- name: reload rethinkdb
+  service:
+    name: "rethinkdb@{{ rethinkdb_instance_name }}"
+    state: reloaded

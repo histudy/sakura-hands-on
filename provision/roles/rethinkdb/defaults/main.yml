@@ -1,0 +1,24 @@
+---
+rethinkdb_instance_name: default
+
+# See https://raw.githubusercontent.com/rethinkdb/rethinkdb/next/packaging/assets/config/default.conf.sample
+rethinkdb_cfg:
+  # runuser: rethinkdb
+  # rungroup: rethinkdb
+  # pid_file: "/var/run/rethinkdb/{{ rethinkdb_instance_name }}/pid_file"
+  directory: "/var/lib/rethinkdb/{{ rethinkdb_instance_name }}"
+  # log_file: /var/log/rethinkdb
+  # bind: all
+  # driver_port: 28015
+  # cluster_port: 29015
+  # http_port: 8080
+  # port_offset: 0
+  # no_http_admin: false
+  # canonical_address:
+  # join: "example.com:29015"
+  # reql_http_proxy: socks5://example.com:1080
+  # cores: 2
+  # cache_size: 1024
+  # io_threads: 64
+  # direct_io: false
+  # server_name: server1

@@ -1,0 +1,58 @@
+---
+- name: install apache
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ apache_packages }}"
+- name: create virtualhost setting directory
+  file:
+    path: "{{ apache_vhost_dir }}"
+    state: directory
+- name: create sunippte setting directory
+  file:
+    path: "{{ apache_snippet_dir }}"
+    state: directory
+- name: create base setting file
+  template:
+    src: httpd.conf.j2
+    dest: /etc/httpd/conf/httpd.conf
+  notify: restart apache
+- name: copy snippet files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ apache_snippet_dir }}/{{ item|basename }}"
+  notify: reload apache
+  with_fileglob:
+    - snippets/*.conf
+- name: create virtualhost setting files
+  template:
+    src: vhost.conf.j2
+    dest: "{{ apache_vhost_dir }}/{{ item.name|default(item.server_name) }}.conf"
+  when: item.state|default(true)
+  with_items: "{{ apache_vhosts }}"
+  notify: reload apache
+- name: remove virtualhost setting files
+  file:
+    path: "{{ apache_vhost_dir }}/{{ item.name|default(item.server_name) }}.conf"
+    state: absent
+  when: not item.state|default(true)
+  with_items: "{{ apache_vhosts }}"
+  notify: reload apache
+- name: apache is active and enabled on system startup
+  service:
+    name: httpd
+    enabled: true
+    state: started
+- name: allow http port
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+  notify: reload firewalld
+- name: allow https port
+  firewalld:
+    service: https
+    permanent: true
+    state: enabled
+  notify: reload firewalld
+  when: "'mod_ssl' in apache_packages"

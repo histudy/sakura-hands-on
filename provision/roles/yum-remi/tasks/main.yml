@@ -1,0 +1,23 @@
+---
+- name: check installed remi repository
+  stat:
+    path: /etc/yum.repo.d/remi.repo
+  register: result
+- block:
+  - name: add GPG key
+    rpm_key:
+      key: https://rpms.remirepo.net/RPM-GPG-KEY-remi
+  - name: install remi repository
+    yum:
+      name: "http://rpms.famillecollet.com/enterprise/remi-release-{{ ansible_distribution_major_version }}.rpm"
+  when: not result.stat.exists
+- name: update remi repository
+  yum:
+    name: remi-release
+    state: latest
+- name: enable remi-safe repository
+  ini_file:
+    dest: /etc/yum.repos.d/remi-safe.repo
+    section: remi-safe
+    option: enabled
+    value: 1

@@ -1,0 +1,34 @@
+---
+- hosts: all
+  roles:
+    - apache
+    - php
+    - mysql
+    - phpmyadmin
+    - wp-cli
+    - mailcatcher
+  tasks:
+    - debug: msg="Let's Sakura Cloud Hans-on"
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+    - name: include secret variable file
+      include_vars: _secret.yml
+    - name: set dns
+      cloudflare_dns:
+        zone: "{{ item.domain|default(domain) }}"
+        type: "{{ item.type|default('A') }}"
+        record: "{{ item.recode|default('@') }}"
+        value: "{{ item.value|default(ansible_default_ipv4.address) }}"
+        state: "{{ 'present' if item.state|default(true) else 'absent' }}"
+        ttl: "{{ item.ttl|default(120) }}"
+        account_email: "{{ cloudflare_emain }}"
+        account_api_token: "{{ cloudflare_token }}"
+      delegate_to: 127.0.0.1
+      with_items:
+        - recode: "@"
+        - recode: www
+        - recode: mailcatcher
+        - recode: db
+      when: cloudflare_emain and cloudflare_token

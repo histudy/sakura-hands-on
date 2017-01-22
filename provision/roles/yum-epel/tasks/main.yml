@@ -1,0 +1,11 @@
+---
+- name: install/update epel repository
+  yum:
+    name: epel-release
+    state: latest
+- name: enable epel repository
+  ini_file:
+    dest: /etc/yum.repos.d/epel.repo
+    section: epel
+    option: enabled
+    value: 1

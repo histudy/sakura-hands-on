@@ -1,0 +1,74 @@
+---
+apache_vhosts:
+  - name: 00-default
+    server_name: "www.{{ domain }}"
+    doc_root: /vagrant/public
+    server_alias: "{{ domain }}"
+    server_admin: "admin@{{ domain }}"
+    options: FollowSymLinks
+    allow_override: All
+    require: "all granted"
+    directory_index: "index.php index.html index.htm"
+    snippets:
+      - redirect_www
+  - name: 01-phpmyadmin
+    server_name: "db.{{ domain }}"
+    doc_root: "{{ phpmyadmin_dest }}"
+    server_admin: "admin@{{ domain }}"
+    options: FollowSymLinks
+    allow_override: All
+    require: "all granted"
+    directory_index: index.php
+  - name: 02-mailcatcher
+    server_name: "mailcatcher.{{ domain }}"
+    extra_parameter: |
+      ProxyRequests Off
+      ProxyPass / http://localhost:{{ mailcatcher_cfg.http.port }}/
+      ProxyPassReverse / http://localhost:{{ mailcatcher_cfg.http.port }}/
+
+php_cfg:
+  sendmail_path: "/usr/bin/env catchmail -f develop@{{ domain }}"
+
+mysql_root_password: root_Passw0rd
+
+mysql_databases:
+  - name: app_prod
+    user: app_prod_user
+    password: appProd_DB_Passw0rd
+    encoding: utf8mb4
+    collation: utf8mb4_general_ci
+  - name: app_stage
+    user: app_stage_user
+    password: appStageing_DB_Passw0rd
+    encoding: utf8mb4
+    collation: utf8mb4_general_ci
+  - name: app_test
+    user: app_test_user
+    password: appTest_DB_Passw0rd
+  - name: app_dev
+    user: add_dev_user
+    password: appDev_DB_Passw0rd
+    encoding: utf8mb4
+    collation: utf8mb4_general_ci
+
+postgresql_hba_cfg:
+  - type: local
+    db: all
+    user: all
+    method: trust
+  - type: local
+    db: all
+    user: postgres
+    method: trust
+  - type: host
+    db: all
+    user: all
+    addr: "127.0.0.1/32"
+    method: trust
+    comment: "IPv4 local connections"
+  - type: host
+    db: all
+    user: all
+    addr: "::1/128"
+    method: trust
+    comment: "IPv6 local connections"

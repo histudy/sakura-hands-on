@@ -1,0 +1,36 @@
+---
+- name: install dependency packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ mailcatcher_dependency_packages }}"
+- name: install MailCatcher
+  gem:
+    name: mailcatcher
+    state: latest
+    user_install: false
+- name: create systemd unit file
+  template:
+    src: mailcatcher.service.j2
+    dest: /usr/lib/systemd/system/mailcatcher.service
+  notify: restart mailcatcher
+- name: MailCatcher is active and enabled on system startup
+  systemd:
+    name: mailcatcher
+    enabled: true
+    daemon_reload: true
+    state: started
+- name: allow smtp port
+  firewalld:
+    port: "{{ mailcatcher_cfg.smtp.port }}/tcp"
+    source: "{{ mailcatcher_cfg.smtp.ip }}"
+    permanent: true
+    state: enabled
+  notify: reload firewalld
+- name: allow http port
+  firewalld:
+    port: "{{ mailcatcher_cfg.http.port }}/tcp"
+    source: "{{ mailcatcher_cfg.http.ip }}"
+    permanent: true
+    state: enabled
+  notify: reload firewalld

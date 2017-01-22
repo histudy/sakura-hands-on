@@ -1,0 +1,14 @@
+---
+- name: get source
+  git:
+    repo: "{{ phpmyadmin_repo }}"
+    dest: "{{ phpmyadmin_dest }}"
+    version: "{{ phpmyadmin_version }}"
+- name: generate mo files
+  command: ./scripts/generate-mo
+  args:
+    chdir: "{{ phpmyadmin_dest }}"
+- name: create config file
+  template:
+    src: config.inc.php.j2
+    dest: "{{ phpmyadmin_dest }}/config.inc.php"

@@ -1,0 +1,59 @@
+---
+- name: add repository
+  yum_repository:
+    name: rethinkdb
+    description: RethinkDB
+    baseurl: "https://download.rethinkdb.com/centos/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/"
+    enabled: true
+    gpgcheck: no
+- name: install RethinkDB
+  yum:
+    name: rethinkdb
+    state: latest
+- name: create RethinkDB config file
+  template:
+    src: instance.conf.j2
+    dest: "/etc/rethinkdb/instances.d/{{ rethinkdb_instance_name }}.conf"
+  notify: restart rethinkdb
+- name: create systemd unit file
+  copy:
+    src: rethinkdb.service
+    dest: /usr/lib/systemd/system/rethinkdb@.service
+  register: result
+- name: create RethinkDB data directory
+  command: rethinkdb create -d {{ rethinkdb_cfg.directory }}
+  args:
+    creates: true
+- name: change RethinkDB data directory owner
+  file:
+    path: "{{ rethinkdb_cfg.directory }}"
+    owner: "{{ rethinkdb_cfg.runuser|default('rethinkdb') }}"
+    group: "{{ rethinkdb_cfg.rungroup|default('rethinkdb') }}"
+    recurse: true
+    state: directory
+- name: RethinkDB is active and enabled on system startup
+  systemd:
+    name: "rethinkdb@{{ rethinkdb_instance_name }}"
+    daemon_reload: true
+    enabled: true
+    state: started
+  notify: restart rethinkdb
+- name: allow RethinkDB driver port
+  firewalld:
+    port: "{{ rethinkdb_cfg.driver_port|default(28015 + rethinkdb_cfg.port_offset|default(0)) }}/tcp"
+    permanent: true
+    state: enabled
+  notify: restart firewalld
+- name: allow RethinkDB cluster port
+  firewalld:
+    port: "{{ rethinkdb_cfg.cluster_port|default(29015 + rethinkdb_cfg.port_offset|default(0)) }}/tcp"
+    permanent: true
+    state: enabled
+  notify: restart firewalld
+- name: allow RethinkDB http port
+  firewalld:
+    port: "{{ rethinkdb_cfg.http_port|default(8080 + rethinkdb_cfg.port_offset|default(0)) }}/tcp"
+    permanent: true
+    state: enabled
+  notify: reload firewalld
+  when: rethinkdb_cfg.no_http_admin is undefined or not rethinkdb_cfg.no_http_admin

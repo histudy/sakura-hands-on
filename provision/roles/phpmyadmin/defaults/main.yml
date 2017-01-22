@@ -1,0 +1,14 @@
+---
+phpmyadmin_version: STABLE
+
+phpmyadmin_cfg:
+  blowfish_secret: ""
+  UploadDir: ""
+  SaveDir: ""
+  DefaultLang: ja
+  Servers:
+    - host: localhost
+      auth_type: cookie
+      connect_type: tcp
+      compress: false
+      AllowNoPassword: false

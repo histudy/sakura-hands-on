@@ -1,0 +1,24 @@
+---
+- name: load variables
+  include_vars: "{{ php_version }}.yml"
+- name: enable remi repository
+  ini_file:
+    dest: "/etc/yum.repos.d/{{ php_repo_file }}.repo"
+    section: "{{ php_repo_section }}"
+    option: enabled
+    value: 1
+- name: install php packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ php_packages }}"
+- name: create config file
+  template:
+    src: php.ini.j2
+    dest: /etc/php.ini
+- name: php-fpm is active and enabled on system startup
+  service:
+    name: php-fpm
+    enabled: true
+    state: started
+  when: "'php-fpm' in php_packages"

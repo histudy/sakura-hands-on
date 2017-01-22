@@ -1,0 +1,3 @@
+---
+phpmyadmin_repo: "https://github.com/phpmyadmin/phpmyadmin.git"
+phpmyadmin_dest: /opt/phpmyadmin
