@@ -3,6 +3,8 @@
 
 ENV['VAGRANT_DEFAULT_PROVIDER'] = 'sakura'
 
+require 'yaml'
+
 Vagrant.configure("2") do |config|
   config.vm.box = "dummy"
   config.vm.box_url = 'https://github.com/tsahara/vagrant-sakura/raw/master/dummy.box'
@@ -19,11 +21,11 @@ Vagrant.configure("2") do |config|
   ansibleVars = {
     "domain": "example.com"
   }
-  groupVariableFile = File.expand_path(File.join(File.dirname(__FILE__), 'provision/group_vars/all.yml'))
+  groupVariableFile = File.expand_path(File.join(File.dirname(__FILE__), 'provision', 'group_vars', 'all.yml'))
   if File.exist?(groupVariableFile)
     ansibleVars.merge!(YAML.load_file(groupVariableFile))
   end
-  hostVariableFile = File.expand_path(File.join(File.dirname(__FILE__), 'provision/host_vars/default.yml'))
+  hostVariableFile = File.expand_path(File.join(File.dirname(__FILE__), 'provision', 'host_vars', 'default.yml'))
   if File.exist?(hostVariableFile)
     ansibleVars.merge!(YAML.load_file(hostVariableFile))
   end
