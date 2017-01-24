@@ -18,9 +18,8 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "LAMP.yml"
   end
 
-  ansibleVars = {
-    "domain": "example.com"
-  }
+  ansibleVars = {}
+  ansibleVars['domain'] = 'example.com'
   groupVariableFile = File.expand_path(File.join(File.dirname(__FILE__), 'provision', 'group_vars', 'all.yml'))
   if File.exist?(groupVariableFile)
     ansibleVars.merge!(YAML.load_file(groupVariableFile))
