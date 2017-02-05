@@ -1,16 +1,29 @@
 ---
+# --------------
+# ドメイン名 ( 以下のコメントアウトを外すと、「provision/group_vars/all.yml」の設定を上書き)
+# ※以下の各設定項目に記載している「{{ domain }}」の値
+# --------------
+# domain: example.com
+
+# --------------
+# Apacheのバーチャルホストの設定
+# --------------
 apache_vhosts:
+  # ローカルのPCと共有している領域 ( http://www.<ドメイン>/ )
   - name: 00-default
-    server_name: "www.{{ domain }}"
-    doc_root: /vagrant/public
-    server_alias: "{{ domain }}"
-    server_admin: "admin@{{ domain }}"
-    options: FollowSymLinks
-    allow_override: All
-    require: "all granted"
-    directory_index: "index.php index.html index.htm"
-    snippets:
+    server_name: "www.{{ domain }}"                     # サーバー名
+    doc_root: /vagrant/public                           # ドキュメントルール
+    server_alias: "{{ domain }}"                        # サーバー名の別名
+    server_admin: "admin@{{ domain }}"                  # サーバー管理者のメールアドレス
+    options: FollowSymLinks                             # Optionsの設定値
+    allow_override: All                                 # AllowOverrideの設定値
+    require: "all granted"                              # Requireの設定値
+    directory_index: "index.php index.html index.htm"   # DirectoryIndexの設定値
+    snippets:                                           # 設定スニペットの読み込み
+      # www無しでアクセスされた時に、www有りにリダイレクトする
       - redirect_www
+
+  # phpMyAdmin用のバーチャルホスト ( http://db.<ドメイン>/ )
   - name: 01-phpmyadmin
     server_name: "db.{{ domain }}"
     doc_root: "{{ phpmyadmin_dest }}"
@@ -19,24 +32,47 @@ apache_vhosts:
     allow_override: All
     require: "all granted"
     directory_index: index.php
+    # 以下の行のコメントアウトを外すと、
+    # バーチェルホストの設定を削除する(※再度プロビジョニングを要実行)
+    # state: false
+
+  # MailCatcher用のバーチャルホスト ( http://mailcatcher.<ドメイン>/ )
   - name: 02-mailcatcher
     server_name: "mailcatcher.{{ domain }}"
+    # MailCatcherのHTTPポートへリーバスプロキシ
     extra_parameter: |
       ProxyRequests Off
       ProxyPass / http://localhost:{{ mailcatcher_cfg.http.port }}/
       ProxyPassReverse / http://localhost:{{ mailcatcher_cfg.http.port }}/
 
+# --------------
+# php.iniの初期値を上書きする項目
+# その他の設定値は、「provision/roles/php/defaults/main.yml」の「php_cfg」の項目を参照
+# --------------
 php_cfg:
   sendmail_path: "/usr/bin/env catchmail -f develop@{{ domain }}"
 
+# --------------
+# MySQLのrootパスワード
+#
+# ※MySQL 5.7を利用する場合はパスワードポリシーの設定を考慮する必要有り
+# 8文字以上のパスワードで、以下の文字が1文字以上含まれている必要あり
+# - 英小文字
+# - 英大文字
+# - 数字
+# - 記号
+# --------------
 mysql_root_password: root_Passw0rd
 
+# --------------
+# MySQLのデータベースとデータベースユーザーの設定
+# --------------
 mysql_databases:
-  - name: app_prod
-    user: app_prod_user
-    password: appProd_DB_Passw0rd
-    encoding: utf8mb4
-    collation: utf8mb4_general_ci
+  - name: app_prod                  # データベース名
+    user: app_prod_user             # ユーザー名
+    password: appProd_DB_Passw0rd   # データベースパスワード
+    encoding: utf8mb4               # 文字コード(オプション)
+    collation: utf8mb4_general_ci   # 文字照合順書(オプション)
   - name: app_stage
     user: app_stage_user
     password: appStageing_DB_Passw0rd
@@ -51,6 +87,11 @@ mysql_databases:
     encoding: utf8mb4
     collation: utf8mb4_general_ci
 
+# --------------
+# PostgreSQLのpg_hba.confの設定
+# ※hba：host-based authentication(ホストベース認証)
+# ※本ハンズオンでは未使用
+# --------------
 postgresql_hba_cfg:
   - type: local
     db: all
@@ -72,3 +113,12 @@ postgresql_hba_cfg:
     addr: "::1/128"
     method: trust
     comment: "IPv6 local connections"
+
+# 上記以外でサーバーの設定値などを調整する場合は、
+# 各ロールに定義されている変数の初期値をこのファイルで再定義し上書きする
+#
+# 各ロールの変数ファイル
+# - provision/roles/<ロール名>/defaults/main.yml
+# - provision/roles/<ロール名>/vars/main.yml
+#
+# ※各変数の設定の上書きに関する詳細に関してはAnsibleの仕様を参照
