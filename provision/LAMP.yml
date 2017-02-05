@@ -10,14 +10,15 @@
     - wp-cli
     - mailcatcher
   tasks:
-    - debug: msg="Let's Sakura Cloud Hans-on"
     - name: restart apache
       service:
         name: httpd
         state: restarted
+    - debug: msg="Let's Sakura Cloud Hans-on"
     - name: include secret variable file
       include_vars: _secret.yml
-    - name: set dns
+    # Cloudflareの設定(※Cloudflareのアクセス情報が定義済みの場合のみ)
+    - name: apply Cloudflare domain setting
       cloudflare_dns:
         zone: "{{ item.domain|default(domain) }}"
         type: "{{ item.type|default('A') }}"
