@@ -35,8 +35,23 @@
 rsyncコマンドがインストールされ、rsyncにパスが通っている必要があります。
 
 - サーバー構築用プログラムをさくらクラウド上のサーバーに転送するために必要になります。  
-- [Chocolatey](https://chocolatey.org/)などを利用することにより、
-比較的簡単にrsyncコマンドのインストールすることが出来ます。
+- [Chocolatey](https://chocolatey.org/)などを利用することにより、比較的簡単にrsyncコマンドをインストールすることが出来ます。
+
+リポジトリのディレクトリ構成の概要や、Windowsでのセットアップ例に関しては、  
+[Wiki](https://github.com/histudy/sakura-hands-on/wiki)を参照してください。
+
+
+### 注意事項
+
+このリポジトリのプロビジョニング処理は、  
+[さくらのクラウド](http://cloud.sakura.ad.jp/)のCentOS 7以降のパブリックアーカイブを利用することを前提に記載されています。  
+パブリックアーカイブの指定を変更された場合は、  
+正常に動作しない可能性があります。
+
+CentOS 7のパブリックアーカイブの仕様に関しては、  
+公式サイトを参照してください。
+
+[CentOS 7.3 (1611) 64bit リリースノート](http://cloud-news.sakura.ad.jp/public_archive_iso/centos73-releasenote/)
 
 License
 ----------------------------------
