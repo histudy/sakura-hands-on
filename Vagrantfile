@@ -62,7 +62,7 @@ Vagrant.configure("2") do |config|
     #   https://secure.sakura.ad.jp/cloud/zone/${SAKURACLOUD_ZONE}/api/cloud/1.1/archive | \
     #   jq -c ".Archives[] | {ID:.ID, Name: .Name}"
     # ```
-    sakura.disk_source_archive = '112801122159'
+    sakura.disk_source_archive = '112900084256'
 
     # サーバプラン一覧
     # ```
