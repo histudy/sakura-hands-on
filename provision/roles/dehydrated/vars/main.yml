@@ -1,0 +1,9 @@
+---
+dehydrated_dependency_packages:
+  - openssl
+  - diffutils
+  - coreutils
+  - grep
+  - sed
+dehydrated_repo: "https://github.com/lukas2511/dehydrated.git"
+dehydrated_version: master

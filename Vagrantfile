@@ -16,7 +16,13 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible_local" do |ansible|
     ansible.provisioning_path = "/vagrant/provision"
     ansible.playbook = "LAMP.yml"
+    ansible.config_file = "/vagrant/provision/ansible.cfg"
   end
+
+  # config.vm.provision "ansible" do |ansible|
+  #   ansible.playbook = "provision/LAMP.yml"
+  #   ansible.config_file = "provision/ansible.cfg"
+  # end
 
   ansibleVars = {}
   ansibleVars['domain'] = 'example.com'
