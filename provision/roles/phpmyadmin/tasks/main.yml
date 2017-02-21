@@ -1,5 +1,5 @@
 ---
-- name: get source
+- name: checkout source
   git:
     repo: "{{ phpmyadmin_repo }}"
     dest: "{{ phpmyadmin_dest }}"
