@@ -1,0 +1,24 @@
+---
+dehydrated_cfg: []
+  # ip_version:
+  # ca: "https://acme-v01.api.letsencrypt.org/directory"
+  # ca_terms: "https://acme-v01.api.letsencrypt.org/terms"
+  # license: ""
+  # challengetype: "http-01"
+  # config_d:
+  # basedir: $SCRIPTDIR
+  # domains_txt: "${BASEDIR}/domains.txt"
+  # certdir: "${BASEDIR}/certs"
+  # accountdir: "${BASEDIR}/accounts"
+  # wellknown: "/var/www/dehydrated"
+  # keysize: "4096"
+  # openssl_cnf:
+  # hook:
+  # hook_chain: "no"
+  # renew_days: "30"
+  # private_key_renew: "yes"
+  # private_key_rollover: "no"
+  # key_algo: rsa
+  # contact_email:
+  # lockfile: "${BASEDIR}/lock"
+  # ocsp_must_staple: "no"

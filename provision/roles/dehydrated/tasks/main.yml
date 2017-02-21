@@ -1,0 +1,24 @@
+---
+- name: install dependency packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ dehydrated_dependency_packages }}"
+- name: checkout dehydrated
+  git:
+    repo: "{{ dehydrated_repo }}"
+    dest: /usr/local/src/dehydrated
+    version: "{{ dehydrated_version }}"
+- name: create symlink
+  file:
+    path: /usr/local/bin/dehydrated
+    src: /usr/local/src/dehydrated/dehydrated
+    state: link
+- name: create config directory
+  file:
+    path: /etc/dehydrated
+    state: directory
+- name: create config file
+  template:
+    src: config.j2
+    dest: /etc/dehydrated/config
