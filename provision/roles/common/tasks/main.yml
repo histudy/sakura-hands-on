@@ -41,13 +41,13 @@
   file:
     path: /var/run/fail2ban
     state: directory
-- name: Ensure fail2ban setting
+- name: ensure fail2ban setting
   ini_file:
     dest: /etc/fail2ban/fail2ban.conf
     section: Definition
     option: logtarget
     value: /var/log/fail2ban.log
-- name: Ensure fail2ban jail settings
+- name: ensure fail2ban jail settings
   ini_file:
     dest: /etc/fail2ban/jail.d/local.conf
     section: "{{ item.section }}"
