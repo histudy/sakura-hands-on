@@ -33,10 +33,30 @@
   command: tuned-adm profile {{ common_tuned_profile }}
   when: common_tuned_profile not in active_tuned_prifile.stdout
 - name: firewalld is active and enabled on system startup
-  service:
+  systemd:
     name: firewalld
     enabled: true
     state: started
+- name: create fail2ban socket file directory
+  file:
+    path: /var/run/fail2ban
+    state: directory
+- name: Ensure fail2ban setting
+  ini_file:
+    dest: /etc/fail2ban/fail2ban.conf
+    section: Definition
+    option: logtarget
+    value: /var/log/fail2ban.log
+- name: Ensure fail2ban jail settings
+  ini_file:
+    dest: /etc/fail2ban/jail.d/local.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - {section: DEFAULT, option: banaction ,value: firewallcmd-ipset}
+    - {section: DEFAULT, option: backend ,value: systemd}
+    - {section: sshd, option: enabled ,value: true}
 - name: fail2ban is active and enabled on system startup
   service:
     name: fail2ban
