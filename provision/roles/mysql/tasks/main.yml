@@ -1,11 +1,11 @@
 ---
-- name: check installed remi repository
+- name: check installed mysql community repository
   stat:
     path: /etc/yum.repo.d/mysql-community.repo
   register: result
 - name: install MySQL repository
   yum:
-    name: "http://dev.mysql.com/get/mysql-community-release-el{{ ansible_distribution_major_version }}-{{ mysql_repository_version }}.noarch.rpm"
+    name: "https://repo.mysql.com/mysql-community-release-el{{ ansible_distribution_major_version }}.rpm"
   when: not result.stat.exists
 - name: update mysql community repository
   yum:
