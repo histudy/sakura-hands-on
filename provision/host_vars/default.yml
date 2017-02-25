@@ -81,11 +81,19 @@ mysql_databases:
   - name: app_test
     user: app_test_user
     password: appTest_DB_Passw0rd
+    encoding: utf8mb4
+    collation: utf8mb4_general_ci
   - name: app_dev
     user: add_dev_user
     password: appDev_DB_Passw0rd
     encoding: utf8mb4
     collation: utf8mb4_general_ci
+
+# --------------
+# phpMyAdminの設定
+# --------------
+phpmyadmin_cfg:
+  blowfish_secret: "{{ 'histudy'|hash('sha1') }}"
 
 # --------------
 # PostgreSQLのpg_hba.confの設定
