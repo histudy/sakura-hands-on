@@ -19,9 +19,9 @@ apache_vhosts:
     allow_override: All                                 # AllowOverrideの設定値
     require: "all granted"                              # Requireの設定値
     directory_index: "index.php index.html index.htm"   # DirectoryIndexの設定値
-    snippets:                                           # 設定スニペットの読み込み
-      # www無しでアクセスされた時に、www有りにリダイレクトする
-      - redirect_www
+    # snippets:                                           # 設定スニペットの読み込み
+    #   # www無しでアクセスされた時に、www有りにリダイレクトする
+    #   - redirect_www
 
   # phpMyAdmin用のバーチャルホスト ( http://db.<ドメイン>/ )
   - name: 01-phpmyadmin
@@ -51,6 +51,14 @@ apache_vhosts:
 # --------------
 php_cfg:
   sendmail_path: "/usr/bin/env catchmail -f develop@{{ domain }}"
+
+# --------------
+# MySQLのバージョン
+# - 5.5
+# - 5.6 (Default)
+# - 5.7
+# --------------
+# mysql_version: 5.6
 
 # --------------
 # MySQLのrootパスワード
