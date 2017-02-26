@@ -3,10 +3,22 @@
   stat:
     path: /etc/yum.repo.d/mysql-community.repo
   register: result
-- name: install MySQL repository
-  yum:
-    name: "https://repo.mysql.com/mysql-community-release-el{{ ansible_distribution_major_version }}.rpm"
+- block:
+  - name: add GPG key
+    rpm_key:
+      key: https://repo.mysql.com/RPM-GPG-KEY-mysql
+  - name: install MySQL repository
+    yum:
+      name: "https://repo.mysql.com/mysql-community-release-el{{ ansible_distribution_major_version }}.rpm"
   when: not result.stat.exists
+- name: change MySQL repository setting
+  replace:
+    dest: /etc/yum.repos.d/mysql-community.repo
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  with_items:
+    - {regexp: '\[mysql57-community-dmr\]', replace: '[mysql57-community]'}
+    - {regexp: 'MySQL 5.7 Community Server Development Milestone Release', replace: 'MySQL 5.7 Community Server'}
 - name: update mysql community repository
   yum:
     name: mysql-community-release
@@ -16,9 +28,13 @@
 - name: enable MySQL Community Server repository
   ini_file:
     dest: "/etc/yum.repos.d/mysql-community.repo"
-    section: "{{ mysql_repo_section }}"
+    section: "{{ item }}"
     option: enabled
     value: 1
+  with_items:
+    - mysql-connectors-community
+    - mysql-tools-community
+    - "{{ mysql_repo_section }}"
 - name: install MySQL packages
   yum:
     name: "{{ item }}"
