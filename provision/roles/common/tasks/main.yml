@@ -56,7 +56,7 @@
   with_items:
     - {section: DEFAULT, option: banaction ,value: firewallcmd-ipset}
     - {section: DEFAULT, option: backend ,value: systemd}
-    - {section: sshd, option: enabled ,value: true}
+    - {section: sshd, option: enabled ,value: "true"}
 - name: fail2ban is active and enabled on system startup
   service:
     name: fail2ban
