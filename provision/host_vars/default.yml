@@ -92,7 +92,7 @@ mysql_databases:
     encoding: utf8mb4
     collation: utf8mb4_general_ci
   - name: app_dev
-    user: add_dev_user
+    user: app_dev_user
     password: appDev_DB_Passw0rd
     encoding: utf8mb4
     collation: utf8mb4_general_ci
