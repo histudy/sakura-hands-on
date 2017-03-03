@@ -1,11 +1,13 @@
 ---
 - name: LAMP
   hosts: all
+  become: true
   roles:
     - common
     - apache
     - php
     - mysql
+    - mycli
     - phpmyadmin
     - wp-cli
     - mailcatcher
@@ -14,7 +16,6 @@
       service:
         name: httpd
         state: restarted
-    - debug: msg="Let's Sakura Cloud Hans-on"
     - name: include secret variable file
       include_vars: _secret.yml
     # Cloudflareの設定(※Cloudflareのアクセス情報が定義済みの場合のみ)
