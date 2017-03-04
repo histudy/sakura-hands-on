@@ -9,3 +9,58 @@ apache_vhosts:
     server_name: www.example.com
     doc_root: /var/www/html
     directory_index: "index.html index.htm"
+
+apache_ssl_cfg:
+  pass_phrase_dialog: "exec:/usr/libexec/httpd-ssl-pass-dialog"
+  session_cache: "shmcb:/run/httpd/sslcache(512000)"
+  session_cache_timeout: 300
+  random_seed:
+    - context: startup
+      source: "file:/dev/urandom"
+      bytes: 512
+    - context: connect
+      source: builtin
+  crypto_device: builtin
+  certificate_file: /etc/pki/tls/certs/localhost.crt
+  certificate_key_file: /etc/pki/tls/private/localhost.key
+  protocol:
+    - all
+    - -SSLv3
+  cipher_suite:
+    - ECDHE-ECDSA-CHACHA20-POLY1305
+    - ECDHE-RSA-CHACHA20-POLY1305
+    - ECDHE-ECDSA-AES128-GCM-SHA256
+    - ECDHE-RSA-AES128-GCM-SHA256
+    - ECDHE-ECDSA-AES256-GCM-SHA384
+    - ECDHE-RSA-AES256-GCM-SHA384
+    - DHE-RSA-AES128-GCM-SHA256
+    - DHE-RSA-AES256-GCM-SHA384
+    - ECDHE-ECDSA-AES128-SHA256
+    - ECDHE-RSA-AES128-SHA256
+    - ECDHE-ECDSA-AES128-SHA
+    - ECDHE-RSA-AES256-SHA384
+    - ECDHE-RSA-AES128-SHA
+    - ECDHE-ECDSA-AES256-SHA384
+    - ECDHE-ECDSA-AES256-SHA
+    - ECDHE-RSA-AES256-SHA
+    - DHE-RSA-AES128-SHA256
+    - DHE-RSA-AES128-SHA
+    - DHE-RSA-AES256-SHA256
+    - DHE-RSA-AES256-SHA
+    - ECDHE-ECDSA-DES-CBC3-SHA
+    - ECDHE-RSA-DES-CBC3-SHA
+    - EDH-RSA-DES-CBC3-SHA
+    - AES128-GCM-SHA256
+    - AES256-GCM-SHA384
+    - AES128-SHA256
+    - AES256-SHA256
+    - AES128-SHA
+    - AES256-SHA
+    - DES-CBC3-SHA
+    - "!DSS"
+  honor_cipher_order: true
+  compression: false
+  use_stapling: true
+  stapling_responder_timeout: 5
+  stapling_return_responder_errors: true
+  stapling_cache: "shmcb:/run/httpd/ocsp(128000)"

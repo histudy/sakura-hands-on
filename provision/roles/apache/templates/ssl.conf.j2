@@ -1,0 +1,49 @@
+#
+# When we also provide SSL we have to listen to the
+# the HTTPS port in addition.
+#
+Listen 443 https
+
+##
+##  SSL Global Context
+##
+##  All SSL configuration in this context applies both to
+##  the main server and all SSL-enabled virtual hosts.
+##
+
+SSLPassPhraseDialog {{ apache_ssl_cfg.pass_phrase_dialog }}
+
+SSLSessionCache {{ apache_ssl_cfg.session_cache }}
+SSLSessionCacheTimeout  {{ apache_ssl_cfg.session_cache_timeout }}
+
+{% for seedSetting in apache_ssl_cfg.random_seed %}
+SSLRandomSeed {{ seedSetting.context }} {{ seedSetting.source }} {{ seedSetting.bytes|default('') }}
+{% endfor %}
+
+SSLCryptoDevice {{ apache_ssl_cfg.crypto_device }}
+
+SSLProtocol {{ apache_ssl_cfg.protocol|join(' ') }}
+SSLCipherSuite {{ apache_ssl_cfg.cipher_suite|join(':') }}
+
+SSLHonorCipherOrder {{ 'on' if apache_ssl_cfg.honor_cipher_order else 'off' }}
+SSLCompression {{ 'on' if apache_ssl_cfg.compression else 'off' }}
+
+{% if apache_ssl_cfg.options is defined -%}
+SSLOptions {{ apache_ssl_cfg.options|join(' ') }}
+{% endif -%}
+
+SSLUseStapling {{ 'on' if apache_ssl_cfg.use_stapling else 'off' }}
+SSLStaplingResponderTimeout {{ apache_ssl_cfg.stapling_responder_timeout }}
+SSLStaplingReturnResponderErrors {{ 'on' if apache_ssl_cfg.stapling_return_responder_errors else 'off' }}
+SSLStaplingCache {{ apache_ssl_cfg.stapling_cache }}
+
+##
+## SSL Virtual Host Context
+##
+
+<VirtualHost _default_:443>
+  SSLEngine on
+  SSLCertificateFile {{ apache_ssl_cfg.certificate_file }}
+  SSLCertificateKeyFile {{ apache_ssl_cfg.certificate_key_file }}
+
+</VirtualHost>

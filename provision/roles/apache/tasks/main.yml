@@ -4,6 +4,12 @@
     name: "{{ item }}"
     state: latest
   with_items: "{{ apache_packages }}"
+- name: create ssl setting file
+  template:
+    src: ssl.conf.j2
+    dest: "{{ apache_conf_dir }}/ssl.conf"
+  notify: reload apache
+  when: "'mod_ssl' in apache_packages"
 - name: create virtualhost setting directory
   file:
     path: "{{ apache_vhost_dir }}"
