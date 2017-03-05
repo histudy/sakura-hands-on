@@ -1,0 +1,25 @@
+---
+- name: install dependency packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ lexicon_dependency_packages }}"
+- name: install dependency pip lexicon
+  pip:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ lexicon_dependency_pip_packages }}"
+- name: install lexicon
+  pip:
+    name: dns-lexicon
+    state: latest
+- block:
+  - name: create hook script directory
+    file:
+      path: "{{ lexicon_hook_dest|dirname }}"
+      state: directory
+  - name: get dehydrated hook script
+    get_url:
+      url: https://raw.githubusercontent.com/AnalogJ/lexicon/master/examples/dehydrated.default.sh
+      dest: "{{ lexicon_hook_dest }}"
+  when: lexicon_install_dehydrated_hook
