@@ -1,6 +1,6 @@
-<VirtualHost *:80>
+<VirtualHost *:{{ 443 if item.ssl is defined else 80 }}>
   ServerName {{ item.server_name }}
-  
+
   {% if item.doc_root is defined -%}
   DocumentRoot {{ item.doc_root }}
   {% endif -%}
@@ -39,6 +39,55 @@
 
   CustomLog {% if item.access_log is defined %}{{ item.access_log }}{% else %}{{ apache_log_dir }}/{{ item.server_name }}-access.log{% endif %} combined
   ErrorLog {% if item.error_log is defined %}{{ item.error_log is defined }}{% else %}{{ apache_log_dir }}/{{ item.server_name }}-error.log{% endif %}
+
+  {% if item.ssl is defined -%}
+  {% if item.ssl.hsts is defined -%}
+  # HSTS
+  Header always set Strict-Transport-Security "{{ item.ssl.hsts }}"
+  {% endif -%}
+  # SSL Configuration
+  SSLEngine on
+  SSLCertificateFile {{ item.ssl.certificate_file }}
+  {% if item.ssl.certificate_chain_file is defined -%}
+  SSLCertificateChainFile {{ item.ssl.certificate_chain_file }}
+  {% endif -%}
+  SSLCertificateKeyFile {{ item.ssl.certificate_key_file }}
+  {% if item.ssl.protocol is defined -%}
+  SSLProtocol {{ item.ssl.protocol|join(' ') }}
+  {% endif -%}
+  {% if item.ssl.cipher_suite is defined -%}
+  SSLCipherSuite {{ item.ssl.cipher_suite|join(':') }}
+  {% endif -%}
+  {% if item.ssl.ca_certificate_file is defined -%}
+  # File of concatenated PEM-encoded CA Certificates for Client Auth
+  SSLCACertificateFile {{ apache_ssl_cfg.ca_certificate_file }}
+  {% endif -%}
+  {% if item.ssl.verify_client is defined -%}
+  SSLVerifyClient {{ item.ssl.verify_client }}
+  {% endif -%}
+  {% if item.ssl.verify_depth is defined -%}
+  SSLVerifyDepth {{ item.ssl.verify_depth }}
+  {% endif -%}
+  {% if item.ssl.honor_cipher_order is defined -%}
+  SSLHonorCipherOrder {{ 'on' if item.ssl.honor_cipher_order else 'off' }}
+  {% endif -%}
+  {% if item.ssl.compression is defined -%}
+  SSLCompression {{ 'on' if item.ssl.compression else 'off' }}
+  {% endif -%}
+  {% if item.ssl.options is defined -%}
+  SSLOptions {{ item.ssl.options|join(' ') }}
+  {% endif -%}
+  {% if item.ssl.use_stapling is defined -%}
+  # OCSP Stapling
+  SSLUseStapling {{ 'on' if item.ssl.use_stapling else 'off' }}
+  {% endif -%}
+  {% if item.ssl.stapling_responder_timeout is defined -%}
+  SSLStaplingResponderTimeout {{ item.ssl.stapling_responder_timeout }}
+  {% endif -%}
+  {% if item.ssl.stapling_return_responder_errors is defined -%}
+  SSLStaplingReturnResponderErrors {{ 'on' if item.ssl.stapling_return_responder_errors else 'off' }}
+  {% endif -%}
+  {% endif -%}
 
   {% if item.extra_parameter is defined -%}
   {{ item.extra_parameter }}

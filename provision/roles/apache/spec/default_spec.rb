@@ -39,6 +39,29 @@ describe port(80) do
 end
 
 if property['apache_packages'].include?('mod_ssl')
+  describe file(property['apache_conf_dir'] + '/ssl.conf') do
+    it { should exist }
+    it { should be_file }
+    sslConfig = property['apache_ssl_cfg'];
+    its(:content) { should match /^SSLPassPhraseDialog #{Regexp.escape(sslConfig['pass_phrase_dialog'])}/ }
+    its(:content) { should match /^SSLSessionCache #{Regexp.escape(sslConfig['session_cache'])}/ }
+    its(:content) { should match /^SSLSessionCacheTimeout #{sslConfig['session_cache_timeout']}/ }
+    sslConfig['random_seed'].each do |randomSeed|
+      its(:content) { should match /^SSLRandomSeed #{randomSeed['context']} #{Regexp.escape(randomSeed['source'])} #{randomSeed['bytes']}/ }
+    end
+    its(:content) { should match /^SSLCryptoDevice #{sslConfig['crypto_device']}/ }
+    its(:content) { should match /^SSLProtocol #{sslConfig['protocol'].join(' ')}/ }
+    its(:content) { should match /^SSLCipherSuite #{sslConfig['cipher_suite'].join(':')}/ }
+    its(:content) { should match /^SSLHonorCipherOrder #{sslConfig['honor_cipher_order'] ? 'on' : 'off'}/ }
+    its(:content) { should match /^SSLCompression #{sslConfig['compression'] ? 'on' : 'off'}/ }
+    if sslConfig.key?('options')
+      its(:content) { should match /^SSLCipherSuite #{sslConfig['options'].join(' ')}/ }
+    end
+    its(:content) { should match /^SSLUseStapling #{sslConfig['use_stapling'] ? 'on' : 'off'}/ }
+    its(:content) { should match /^SSLStaplingResponderTimeout #{sslConfig['stapling_responder_timeout']}/ }
+    its(:content) { should match /^SSLStaplingReturnResponderErrors #{sslConfig['stapling_return_responder_errors'] ? 'on' : 'off'}/ }
+    its(:content) { should match /^SSLStaplingCache #{Regexp.escape(sslConfig['stapling_cache'])}/ }
+  end
   describe port(443) do
     it { should be_listening }
   end

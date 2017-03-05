@@ -1,4 +1,5 @@
 ---
 apache_log_dir: /var/log/httpd
+apache_conf_dir: /etc/httpd/conf.d
 apache_vhost_dir: /etc/httpd/vhosts
 apache_snippet_dir: /etc/httpd/snippets
