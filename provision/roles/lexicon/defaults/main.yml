@@ -1,0 +1,3 @@
+---
+lexicon_install_dehydrated_hook: true
+lexicon_hook_dest: /etc/dehydrated/hooks/lexicon

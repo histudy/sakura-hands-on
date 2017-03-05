@@ -13,17 +13,13 @@
   pip:
     name: dns-lexicon
     state: latest
-- name: check installd dehydrated
-  stat:
-    path: /etc/dehydrated
-  register: result
 - block:
   - name: create hook script directory
     file:
-      path: /etc/dehydrated/hooks
+      path: "{{ lexicon_hook_dest|dirname }}"
       state: directory
   - name: get dehydrated hook script
     get_url:
       url: https://raw.githubusercontent.com/AnalogJ/lexicon/master/examples/dehydrated.default.sh
-      dest: /etc/dehydrated/hooks/lexicon
-  when: result.stat.exists
+      dest: "{{ lexicon_hook_dest }}"
+  when: lexicon_install_dehydrated_hook
