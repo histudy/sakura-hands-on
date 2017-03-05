@@ -1,14 +1,27 @@
 ---
-- name: checkout source
-  git:
-    repo: "{{ phpmyadmin_repo }}"
-    dest: "{{ phpmyadmin_dest }}"
-    version: "{{ phpmyadmin_version }}"
-- name: generate mo files
-  command: ./scripts/generate-mo
-  args:
-    chdir: "{{ phpmyadmin_dest }}"
-- name: create config file
+- name: install phpMyAdmin
+  yum:
+    name: phpMyAdmin
+    state: latest
+- name: create phpMyAdmin config file
   template:
     src: config.inc.php.j2
-    dest: "{{ phpmyadmin_dest }}/config.inc.php"
+    dest: /etc/phpMyAdmin/config.inc.php
+- name: create phpMyAdmin upload directory
+  file:
+    dest: "{{ phpmyadmin_upload_dir }}"
+    state: directory
+    mode: 0750
+    group: apache
+    owner: apache
+- name: create phpMyAdmin save directory
+  file:
+    dest: "{{ phpmyadmin_save_dir }}"
+    state: directory
+    mode: 0750
+    group: apache
+    owner: apache
+- name: remove apache phpMyAdmin config file
+  file:
+    path: /etc/httpd/conf.d/phpMyAdmin.conf
+    state: absent

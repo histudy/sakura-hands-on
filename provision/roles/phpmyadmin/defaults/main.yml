@@ -1,14 +1,97 @@
 ---
-phpmyadmin_version: STABLE
+
+phpmyadmin_upload_dir: &phpmyadmin_upload_dir
+  /var/lib/phpMyAdmin/upload
+phpmyadmin_save_dir: &phpmyadmin_save_dir
+  /var/lib/phpMyAdmin/save
 
 phpmyadmin_cfg:
-  blowfish_secret: ""
-  UploadDir: ""
-  SaveDir: ""
+  blowfish_secret: "YOU_MUST_FILL_IN_THIS_FOR_COOKIE_AUTH_!"
   DefaultLang: ja
+  UploadDir: *phpmyadmin_upload_dir
+  SaveDir: *phpmyadmin_save_dir
+  PmaNoRelation_DisableWarning: true
   Servers:
+      # MySQL hostname or IP address
     - host: localhost
-      auth_type: cookie
+      # MySQL port - leave blank for default port
+      port: ""
+      # Path to the socket - leave blank for default socket
+      socket: ""
+      # How to connect to MySQL server ('tcp' or 'socket')
       connect_type: tcp
+      # The php MySQL extension to use ('mysql' or 'mysqli')
+      extension: mysqli
+      # Use compressed protocol for the MySQL connection
       compress: false
+      # MySQL control user settings
+      # (this user must have read-only access to the "mysql/user" and "mysql/db" tables).
+      # The controluser is also used for all relational features (pmadb)
+      controluser: ""
+      controlpass: ""
+      # Authentication method (config, http or cookie based)?
+      auth_type: cookie
+      # MySQL user MySQL password (only needed with 'config' auth_type)
+      user: ""
+      password: ""
+      # If set to a db-name, only this db is displayed in left frame
+      # It may also be an array of db-names, where sorting order is relevant.
+      only_db: ""
+      # Database name to be hidden from listings
+      hide_db: ""
+      # Verbose name for this host - leave blank to show the hostname
+      verbose: ""
+      # Database used for Relation, Bookmark and PDF Features
+      # (see scripts/create_tables.sql)
+      # - leave blank for no support
+      # - DEFAULT: phpmyadmin
+      pmadb: ""
+      # Bookmark table
+      # - leave blank for no bookmark support
+      # - DEFAULT: pma_bookmark
+      bookmarktable: ""
+      # table to describe the relation between links (see doc)
+      # - leave blank for no relation-links support
+      # - DEFAULT: pma_relation
+      relation: ""
+      # table to describe the display fields
+      # - leave blank for no display fields support
+      # - DEFAULT: pma_table_info
+      table_info: ""
+      # table to describe the tables position for the PDF schema
+      # - leave blank for no PDF schema support
+      # - DEFAULT: pma_table_coords
+      table_coords: ""
+      # table to describe pages of relationpdf
+      # - leave blank if you don't want to use this
+      # - DEFAULT: pma_pdf_pages
+      pdf_pages: ""
+      # table to store column information
+      # - leave blank for no column comments/mime types
+      # - DEFAULT: pma_column_info
+      column_info: ""
+      # table to store SQL history
+      # - leave blank for no SQL query history
+      # - DEFAULT: pma_history
+      history: ""
+      # set to FALSE if you know that your pma_* tables
+      # are up to date. This prevents compatibility
+      # checks and thereby increases performance.
+      verbose_check: true
+      # whether to allow root login
+      AllowRoot: true
+      AllowDeny:
+        # Host authentication order, leave blank to not use
+        order: ""
+        # Host authentication rules, leave blank for defaults
+        rules: []
+      # Allow logins without a password. Do not change the FALSE
+      # default unless you're running a passwordless MySQL server
       AllowNoPassword: false
+      # Leave blank (default) for no Designer support, otherwise
+      # set to suggested 'pma_designer_coords' if really needed
+      designer_coords: ""
+      bs_garbage_threshold: 50
+      bs_repository_threshold: "32M"
+      bs_temp_blob_timeout: 600
+      bs_temp_log_threshold: "32M"
