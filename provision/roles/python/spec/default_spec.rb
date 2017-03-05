@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-property['python_packages'].each do |pkg|
+%w{python-devel python-setuptools python2-pip}.each do |pkg|
   describe package(pkg) do
     it { should be_installed }
   end
