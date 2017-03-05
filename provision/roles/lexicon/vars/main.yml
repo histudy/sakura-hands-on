@@ -1,0 +1,18 @@
+---
+lexicon_dependency_packages:
+  - openssl
+  - diffutils
+  - coreutils
+  - grep
+  - sed
+  - libffi-devel
+  - openssl-devel
+  - python2-boto3
+
+lexicon_dependency_pip_packages:
+  - requests
+  - pyOpenSSL
+  - cryptography
+  - idna
+  - tldextract
+  - future
