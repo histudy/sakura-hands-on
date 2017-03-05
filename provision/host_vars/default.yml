@@ -26,7 +26,7 @@ apache_vhosts:
   # phpMyAdmin用のバーチャルホスト ( http://db.<ドメイン>/ )
   - name: 01-phpmyadmin
     server_name: "db.{{ domain }}"
-    doc_root: "{{ phpmyadmin_dest }}"
+    doc_root: /usr/share/phpMyAdmin
     server_admin: "admin@{{ domain }}"
     options: FollowSymLinks
     allow_override: All

@@ -1,2 +1,3 @@
 dependencies:
+  - yum-epel
   - php
