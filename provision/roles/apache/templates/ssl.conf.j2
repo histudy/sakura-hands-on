@@ -14,7 +14,7 @@ Listen 443 https
 SSLPassPhraseDialog {{ apache_ssl_cfg.pass_phrase_dialog }}
 
 SSLSessionCache {{ apache_ssl_cfg.session_cache }}
-SSLSessionCacheTimeout  {{ apache_ssl_cfg.session_cache_timeout }}
+SSLSessionCacheTimeout {{ apache_ssl_cfg.session_cache_timeout }}
 
 {% for seedSetting in apache_ssl_cfg.random_seed %}
 SSLRandomSeed {{ seedSetting.context }} {{ seedSetting.source }} {{ seedSetting.bytes|default('') }}
