@@ -15,7 +15,7 @@
 # default: <unset>
 #IP_VERSION=
 {% if dehydrated_cfg.ip_version is defined -%}
-IP_VERSION={{ dehydrated_cfg.ip_version }}
+IP_VERSION="{{ dehydrated_cfg.ip_version }}"
 {% endif %}
 
 # Path to certificate authority (default: https://acme-v01.api.letsencrypt.org/directory)
@@ -105,7 +105,7 @@ OPENSSL_CNF="{{ dehydrated_cfg.openssl_cnf }}"
 # default: <unset>
 #HOOK=
 {% if dehydrated_cfg.hook is defined -%}
-HOOK={{ dehydrated_cfg.hook }}
+HOOK="{{ dehydrated_cfg.hook }}"
 {% endif %}
 
 # Chain clean_challenge|deploy_challenge arguments together into one hook call per certificate (default: no)
