@@ -9,8 +9,14 @@
     name: "{{ item }}"
     state: latest
   with_items: "{{ common_pachages }}"
+- name: check selinux config file
+  stat:
+    path: /etc/selinux/config
+  register: result
 - name: disable SELinux
-  selinux: state=disabled
+  selinux:
+    state: disabled
+  when: result.stat.exists
 - name: tuned is active and enabled on system startup
   service:
     name: tuned
