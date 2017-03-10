@@ -6,10 +6,6 @@ ENV['VAGRANT_DEFAULT_PROVIDER'] = 'sakura'
 require 'yaml'
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "dummy"
-  config.vm.box_url = 'https://github.com/tsahara/vagrant-sakura/raw/master/dummy.box'
-
-  config.ssh.pty = true
 
   config.vm.synced_folder ".", "/vagrant"
 
@@ -47,6 +43,8 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider :sakura do |sakura, override|
+    override.vm.box = "dummy"
+    override.vm.box_url = 'https://github.com/tsahara/vagrant-sakura/raw/master/dummy.box'
 
     sakura.access_token = ENV['SAKURACLOUD_ACCESS_TOKEN'] || 'YOUR ACCESS TOKEN'
     sakura.access_token_secret = ENV['SAKURACLOUD_ACCESS_TOKEN_SECRET'] || 'YOUR ACCESS TOKEN SECRET'
@@ -95,6 +93,7 @@ Vagrant.configure("2") do |config|
     sakura.sshkey_id = '0123456789'
 
     override.ssh.username = "root"
+    override.ssh.pty = true
     override.ssh.private_key_path = File.expand_path("~/.ssh/vagrant")
   end
 end
