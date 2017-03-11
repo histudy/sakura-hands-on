@@ -22,3 +22,7 @@
   template:
     src: config.j2
     dest: /etc/dehydrated/config
+- name: register account key
+  command: /usr/local/bin/dehydrated --register --accept-terms
+  args:
+    creates: /etc/dehydrated/accounts
