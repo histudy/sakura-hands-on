@@ -22,4 +22,5 @@
     get_url:
       url: https://raw.githubusercontent.com/AnalogJ/lexicon/master/examples/dehydrated.default.sh
       dest: "{{ lexicon_hook_dest }}"
+      mode: 0755
   when: lexicon_install_dehydrated_hook
