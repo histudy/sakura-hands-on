@@ -12,7 +12,7 @@ apache_vhosts:
   # ローカルのPCと共有している領域 ( http://www.<ドメイン>/ )
   - name: 00-default
     server_name: "www.{{ domain }}"                     # サーバー名
-    doc_root: /vagrant/public                           # ドキュメントルール
+    doc_root: /vagrant/public                           # ドキュメントルート
     server_alias: "{{ domain }}"                        # サーバー名の別名
     server_admin: "admin@{{ domain }}"                  # サーバー管理者のメールアドレス
     options: FollowSymLinks                             # Optionsの設定値
@@ -72,7 +72,7 @@ mysql_databases:
     user: app_prod_user             # ユーザー名
     password: appProd_DB_Passw0rd   # データベースパスワード
     encoding: utf8mb4               # 文字コード(オプション)
-    collation: utf8mb4_general_ci   # 文字照合順書(オプション)
+    collation: utf8mb4_general_ci   # 文字照合順序(オプション)
   - name: app_stage
     user: app_stage_user
     password: appStageing_DB_Passw0rd
